@@ -1,3 +1,45 @@
+// import { NextResponse } from "next/server"
+// import type { NextRequest } from "next/server"
+// import { createServerClient } from "@supabase/ssr"
+
+// export async function proxy(req: NextRequest) {
+
+//   const res = NextResponse.next()
+
+//   const supabase = createServerClient(
+//     process.env.NEXT_PUBLIC_SUPABASE_URL!,
+//     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+//     {
+//       cookies: {
+//         getAll() {
+//           return req.cookies.getAll()
+//         },
+//         setAll(cookiesToSet) {
+//           cookiesToSet.forEach(({ name, value }) =>
+//             req.cookies.set(name, value)
+//           )
+//         },
+//       },
+//     }
+//   )
+
+//   const {
+//     data: { user },
+//   } = await supabase.auth.getUser()
+
+//   const isDashboard = req.nextUrl.pathname.startsWith("/dashboard")
+
+//   if (isDashboard && !user) {
+//     return NextResponse.redirect(new URL("/", req.url))
+//   }
+
+//   return res
+// }
+
+// export const config = {
+//   matcher: ["/dashboard/:path*"],
+// }
+
 import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 import { createServerClient } from "@supabase/ssr"
@@ -29,8 +71,22 @@ export async function proxy(req: NextRequest) {
 
   const isDashboard = req.nextUrl.pathname.startsWith("/dashboard")
 
-  if (isDashboard && !user) {
-    return NextResponse.redirect(new URL("/", req.url))
+  if (isDashboard) {
+
+    if (!user) {
+      return NextResponse.redirect(new URL("/", req.url))
+    }
+
+    // check role from users table
+    const { data: dbUser } = await supabase
+      .from("users")
+      .select("role")
+      .eq("id", user.id)
+      .single()
+
+    if (!dbUser || dbUser.role !== "admin") {
+      return NextResponse.redirect(new URL("/", req.url))
+    }
   }
 
   return res
