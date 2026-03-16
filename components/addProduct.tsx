@@ -47,7 +47,6 @@
 // export default function AddProducts() {
 
 //   const supabase = createClient()
-
 //   const formRef = useRef<HTMLFormElement>(null)
 
 //   const [categories, setCategories] = useState<Category[]>([])
@@ -95,15 +94,15 @@
 
 //     for (const file of Array.from(files)) {
 
-//       const fileName = `${Date.now()}-${file.name}`
+//       const name = Date.now() + "-" + file.name
 
 //       await supabase.storage
 //         .from("product-images")
-//         .upload(fileName, file)
+//         .upload(name, file)
 
 //       const { data } = supabase.storage
 //         .from("product-images")
-//         .getPublicUrl(fileName)
+//         .getPublicUrl(name)
 
 //       urls.push(data.publicUrl)
 //     }
@@ -130,40 +129,33 @@
 
 //     setOptions([
 //       ...options,
-//       {
-//         name: "",
-//         sort_order: 0,
-//         values: []
-//       }
+//       { name: "", sort_order: 0, values: [] }
 //     ])
 //   }
 
 //   function addOptionValue(index: number) {
 
-//     const copy: ProductOption[] = [...options]
+//     const copy = [...options]
 
-//     copy[index].values = [
-//       ...copy[index].values,
-//       {
-//         value: "",
-//         sort_order: 0,
-//         sku: "",
-//         name: "",
-//         attributes: {},
-//         addon_price: 0,
-//         inventory_quantity: 0,
-//         reserved_quantity: 0,
-//         low_stock_threshold: 5,
-//         is_active: true
-//       }
-//     ]
+//     copy[index].values.push({
+//       value: "",
+//       sort_order: 0,
+//       sku: "",
+//       name: "",
+//       attributes: {},
+//       addon_price: 0,
+//       inventory_quantity: 0,
+//       reserved_quantity: 0,
+//       low_stock_threshold: 5,
+//       is_active: true
+//     })
 
 //     setOptions(copy)
 //   }
 
 //   function updateOptionName(index: number, value: string) {
 
-//     const copy: ProductOption[] = [...options]
+//     const copy = [...options]
 //     copy[index].name = value
 //     setOptions(copy)
 //   }
@@ -175,9 +167,9 @@
 //     value: OptionValue[keyof OptionValue]
 //   ) {
 
-//     const copy: ProductOption[] = [...options]
+//     const copy = [...options]
 
-//     const updatedValue: OptionValue = {
+//     const updatedValue = {
 //       ...copy[optionIndex].values[valueIndex],
 //       [field]: value
 //     }
@@ -235,19 +227,14 @@
 
 //     alert("Product saved successfully")
 
-//     /* -------- RESET FORM -------- */
+//     /* RESET FORM */
 
 //     formRef.current?.reset()
 
 //     setImages([])
 //     setPreview([])
-
-//     setDescription([
-//       { title: "", description: "" }
-//     ])
-
 //     setOptions([])
-
+//     setDescription([{ title: "", description: "" }])
 //     setIsFeatured(false)
 //     setIsActive(true)
 //   }
@@ -256,284 +243,315 @@
 
 //   return (
 
-//     <form ref={formRef} onSubmit={handleSubmit} className="space-y-8 max-w-5xl">
+// <form ref={formRef} onSubmit={handleSubmit} className="space-y-10 max-w-7xl">
 
-//       <Card>
-//         <CardHeader>
-//           <CardTitle>Basic Information</CardTitle>
-//         </CardHeader>
+// {/* BASIC INFO */}
 
-//         <CardContent className="grid gap-4">
+// <Card>
 
-//           <div>
-//             <Label>Name</Label>
-//             <Input name="name" required />
-//           </div>
+// <CardHeader>
+// <CardTitle>Basic Information</CardTitle>
+// </CardHeader>
 
-//           <div>
-//             <Label>Brand</Label>
-//             <Input name="brand" />
-//           </div>
+// <CardContent className="grid grid-cols-3 gap-6">
 
-//           <div>
-//             <Label>Slug</Label>
-//             <Input name="slug" required />
-//           </div>
+// <div>
+// <Label>Name</Label>
+// <Input name="name" required />
+// </div>
 
-//         </CardContent>
-//       </Card>
+// <div>
+// <Label>Brand</Label>
+// <Input name="brand" />
+// </div>
 
-//       <Card>
+// <div>
+// <Label>Slug</Label>
+// <Input name="slug" required />
+// </div>
 
-//         <CardHeader>
-//           <CardTitle>Category</CardTitle>
-//         </CardHeader>
+// </CardContent>
+// </Card>
 
-//         <CardContent>
+// {/* CATEGORY */}
 
-//           <select name="category" className="border rounded p-2 w-full">
+// <Card>
 
-//             {categories.map(c => (
-//               <option key={c.id} value={c.id}>
-//                 {c.name}
-//               </option>
-//             ))}
+// <CardHeader>
+// <CardTitle>Category</CardTitle>
+// </CardHeader>
 
-//           </select>
+// <CardContent>
 
-//         </CardContent>
-//       </Card>
+// <select name="category" className="border rounded p-2 w-full">
 
-//       <Card>
+// {categories.map(c => (
+// <option key={c.id} value={c.id}>
+// {c.name}
+// </option>
+// ))}
 
-//         <CardHeader>
-//           <CardTitle>Pricing</CardTitle>
-//         </CardHeader>
+// </select>
 
-//         <CardContent className="grid grid-cols-2 gap-4">
+// </CardContent>
+// </Card>
 
-//           <div>
-//             <Label>Base Price</Label>
-//             <Input name="base_price" type="number" />
-//           </div>
+// {/* PRICING */}
 
-//           <div>
-//             <Label>MRP</Label>
-//             <Input name="mrp" type="number" />
-//           </div>
+// <Card>
 
-//         </CardContent>
-//       </Card>
+// <CardHeader>
+// <CardTitle>Pricing</CardTitle>
+// </CardHeader>
 
-//       <Card>
+// <CardContent className="grid grid-cols-2 gap-6">
 
-//         <CardHeader>
-//           <CardTitle>Metadata</CardTitle>
-//         </CardHeader>
+// <div>
+// <Label>Base Price</Label>
+// <Input name="base_price" type="number" />
+// </div>
 
-//         <CardContent>
+// <div>
+// <Label>MRP</Label>
+// <Input name="mrp" type="number" />
+// </div>
 
-//           <Label>Comma separated metadata</Label>
-//           <Input name="metadata" placeholder="portable,medical,lightweight" />
+// </CardContent>
+// </Card>
 
-//         </CardContent>
-//       </Card>
+// {/* METADATA */}
 
-//       <Card>
+// <Card>
 
-//         <CardHeader>
-//           <CardTitle>Product Settings</CardTitle>
-//         </CardHeader>
+// <CardHeader>
+// <CardTitle>Metadata</CardTitle>
+// </CardHeader>
 
-//         <CardContent className="flex gap-6">
+// <CardContent>
 
-//           <div className="flex items-center gap-2">
+// <Label>Comma separated metadata</Label>
+// <Input name="metadata" />
 
-//             <Checkbox
-//               checked={isFeatured}
-//               onCheckedChange={(v) => setIsFeatured(Boolean(v))}
-//             />
+// </CardContent>
+// </Card>
 
-//             <Label>Featured</Label>
+// {/* FLAGS */}
 
-//           </div>
+// <Card>
 
-//           <div className="flex items-center gap-2">
+// <CardHeader>
+// <CardTitle>Product Settings</CardTitle>
+// </CardHeader>
 
-//             <Checkbox
-//               checked={isActive}
-//               onCheckedChange={(v) => setIsActive(Boolean(v))}
-//             />
+// <CardContent className="flex gap-8">
 
-//             <Label>Active</Label>
+// <div className="flex items-center gap-3">
+// <Checkbox checked={isFeatured} onCheckedChange={(v)=>setIsFeatured(Boolean(v))}/>
+// <Label>Featured</Label>
+// </div>
 
-//           </div>
+// <div className="flex items-center gap-3">
+// <Checkbox checked={isActive} onCheckedChange={(v)=>setIsActive(Boolean(v))}/>
+// <Label>Active</Label>
+// </div>
 
-//         </CardContent>
-//       </Card>
+// </CardContent>
+// </Card>
 
-//       <Card>
+// {/* DESCRIPTION */}
 
-//         <CardHeader>
-//           <CardTitle>Description Sections</CardTitle>
-//         </CardHeader>
+// <Card>
 
-//         <CardContent className="space-y-4">
+// <CardHeader>
+// <CardTitle>Description Sections</CardTitle>
+// </CardHeader>
 
-//           {description.map((d, i) => (
+// <CardContent className="space-y-6">
 
-//             <div key={i} className="border rounded p-4 space-y-2">
+// {description.map((d,i)=>(
+// <div key={i} className="border rounded-lg p-4 space-y-3">
 
-//               <Input
-//                 placeholder="Title"
-//                 value={d.title}
-//                 onChange={(e) =>
-//                   updateDescription(i, "title", e.target.value)
-//                 }
-//               />
+// <div>
+// <Label>Title</Label>
+// <Input value={d.title} onChange={(e)=>updateDescription(i,"title",e.target.value)} />
+// </div>
 
-//               <Textarea
-//                 placeholder="Description"
-//                 value={d.description}
-//                 onChange={(e) =>
-//                   updateDescription(i, "description", e.target.value)
-//                 }
-//               />
+// <div>
+// <Label>Description</Label>
+// <Textarea value={d.description} onChange={(e)=>updateDescription(i,"description",e.target.value)} />
+// </div>
 
-//             </div>
+// </div>
+// ))}
 
-//           ))}
+// <Button type="button" onClick={addDescription}>
+// Add Section
+// </Button>
 
-//           <Button type="button" onClick={addDescription}>
-//             + Add Section
-//           </Button>
+// </CardContent>
+// </Card>
 
-//         </CardContent>
-//       </Card>
+// {/* IMAGES */}
 
-//       <Card>
+// <Card>
 
-//         <CardHeader>
-//           <CardTitle>Images (Max 5)</CardTitle>
-//         </CardHeader>
+// <CardHeader>
+// <CardTitle>Images (max 5)</CardTitle>
+// </CardHeader>
 
-//         <CardContent className="space-y-4">
+// <CardContent className="space-y-4">
 
-//           <input
-//             type="file"
-//             multiple
-//             onChange={(e) => {
+// <input type="file" multiple
+// onChange={(e)=>{
 
-//               uploadImages(e.target.files)
+// uploadImages(e.target.files)
 
-//               const previews = Array.from(e.target.files ?? []).map(file =>
-//                 URL.createObjectURL(file)
-//               )
+// const p=[...Array.from(e.target.files ?? [])].map(f=>URL.createObjectURL(f))
+// setPreview(p)
 
-//               setPreview(previews)
-//             }}
-//           />
+// }}
+// />
 
-//           <div className="flex gap-4">
+// <div className="flex gap-4">
 
-//             {preview.map(src => (
-//               <img
-//                 key={src}
-//                 src={src}
-//                 className="w-20 h-20 rounded object-cover"
-//               />
-//             ))}
+// {preview.map(src=>(
+// <img key={src} src={src} className="w-24 h-24 object-cover rounded"/>
+// ))}
 
-//           </div>
+// </div>
 
-//         </CardContent>
-//       </Card>
+// </CardContent>
+// </Card>
 
-//       <Card>
+// {/* PRODUCT OPTIONS */}
 
-//         <CardHeader>
-//           <CardTitle>Product Options</CardTitle>
-//         </CardHeader>
+// <Card>
 
-//         <CardContent className="space-y-6">
+// <CardHeader>
+// <CardTitle>Product Options / Variants</CardTitle>
+// </CardHeader>
 
-//           {options.map((option, i) => (
+// <CardContent className="space-y-10">
 
-//             <div key={i} className="border rounded p-4 space-y-4">
+// {options.map((option,i)=>(
+// <div key={i} className="border rounded-xl p-6 space-y-6 bg-muted/20">
 
-//               <Input
-//                 placeholder="Option Name (Size / Color)"
-//                 value={option.name}
-//                 onChange={(e) =>
-//                   updateOptionName(i, e.target.value)
-//                 }
-//               />
+// <div className="grid grid-cols-2 gap-6">
 
-//               {option.values.map((value, vi) => (
+// <div>
+// <Label>Option Name</Label>
+// <Input value={option.name} onChange={(e)=>updateOptionName(i,e.target.value)} />
+// </div>
 
-//                 <div key={vi} className="grid grid-cols-4 gap-3">
+// <div>
+// <Label>Sort Order</Label>
+// <Input type="number" value={option.sort_order}
+// onChange={(e)=>{
+// const copy=[...options]
+// copy[i].sort_order=Number(e.target.value)
+// setOptions(copy)
+// }}/>
+// </div>
 
-//                   <Input
-//                     placeholder="Value"
-//                     value={value.value}
-//                     onChange={(e) =>
-//                       updateOptionValue(i, vi, "value", e.target.value)
-//                     }
-//                   />
+// </div>
 
-//                   <Input
-//                     placeholder="SKU"
-//                     value={value.sku}
-//                     onChange={(e) =>
-//                       updateOptionValue(i, vi, "sku", e.target.value)
-//                     }
-//                   />
+// <div className="space-y-6">
 
-//                   <Input
-//                     placeholder="Addon Price"
-//                     type="number"
-//                     value={value.addon_price}
-//                     onChange={(e) =>
-//                       updateOptionValue(i, vi, "addon_price", Number(e.target.value))
-//                     }
-//                   />
+// {option.values.map((value,vi)=>(
+// <div key={vi} className="border p-6 rounded-lg grid grid-cols-4 gap-6">
 
-//                   <Input
-//                     placeholder="Stock"
-//                     type="number"
-//                     value={value.inventory_quantity}
-//                     onChange={(e) =>
-//                       updateOptionValue(i, vi, "inventory_quantity", Number(e.target.value))
-//                     }
-//                   />
+// <div>
+// <Label>Value</Label>
+// <Input value={value.value}
+// onChange={(e)=>updateOptionValue(i,vi,"value",e.target.value)}/>
+// </div>
 
-//                 </div>
+// <div>
+// <Label>Name</Label>
+// <Input value={value.name}
+// onChange={(e)=>updateOptionValue(i,vi,"name",e.target.value)}/>
+// </div>
 
-//               ))}
+// <div>
+// <Label>SKU</Label>
+// <Input value={value.sku}
+// onChange={(e)=>updateOptionValue(i,vi,"sku",e.target.value)}/>
+// </div>
 
-//               <Button type="button" onClick={() => addOptionValue(i)}>
-//                 + Add Option Value
-//               </Button>
+// <div>
+// <Label>Sort Order</Label>
+// <Input type="number" value={value.sort_order}
+// onChange={(e)=>updateOptionValue(i,vi,"sort_order",Number(e.target.value))}/>
+// </div>
 
-//             </div>
+// <div>
+// <Label>Addon Price</Label>
+// <Input type="number" value={value.addon_price}
+// onChange={(e)=>updateOptionValue(i,vi,"addon_price",Number(e.target.value))}/>
+// </div>
 
-//           ))}
+// <div>
+// <Label>Inventory</Label>
+// <Input type="number" value={value.inventory_quantity}
+// onChange={(e)=>updateOptionValue(i,vi,"inventory_quantity",Number(e.target.value))}/>
+// </div>
 
-//           <Button type="button" onClick={addOption}>
-//             + Add Option
-//           </Button>
+// <div>
+// <Label>Reserved</Label>
+// <Input type="number" value={value.reserved_quantity}
+// onChange={(e)=>updateOptionValue(i,vi,"reserved_quantity",Number(e.target.value))}/>
+// </div>
 
-//         </CardContent>
+// <div>
+// <Label>Low Stock Threshold</Label>
+// <Input type="number" value={value.low_stock_threshold}
+// onChange={(e)=>updateOptionValue(i,vi,"low_stock_threshold",Number(e.target.value))}/>
+// </div>
 
-//       </Card>
+// <div>
+// <Label>Attributes (JSON)</Label>
+// <Input placeholder='{"weight":"200g"}'
+// onChange={(e)=>{
+// try{
+// updateOptionValue(i,vi,"attributes",JSON.parse(e.target.value))
+// }catch{}
+// }}/>
+// </div>
 
-//       <Button type="submit" size="lg">
-//         Save Product
-//       </Button>
+// <div className="flex items-center gap-3">
+// <Checkbox checked={value.is_active}
+// onCheckedChange={(v)=>updateOptionValue(i,vi,"is_active",Boolean(v))}/>
+// <Label>Active</Label>
+// </div>
 
-//     </form>
+// </div>
+// ))}
+
+// <Button type="button" variant="outline" onClick={()=>addOptionValue(i)}>
+// Add Option Value
+// </Button>
+
+// </div>
+
+// </div>
+// ))}
+
+// <Button type="button" variant="secondary" onClick={addOption}>
+// Add Product Option
+// </Button>
+
+// </CardContent>
+
+// </Card>
+
+// <Button size="lg" type="submit">
+// Save Product
+// </Button>
+
+// </form>
 //   )
 // }
+
 "use client"
 
 import { useEffect, useState, useRef } from "react"
@@ -563,11 +581,12 @@ interface OptionValue {
   sort_order: number
   sku: string
   name: string
-  attributes: Record<string, unknown>
+  attributes: Record<string, string>
   addon_price: number
   inventory_quantity: number
   reserved_quantity: number
   low_stock_threshold: number
+  tax_percent:number
   is_active: boolean
 }
 
@@ -596,6 +615,8 @@ export default function AddProducts() {
 
   const [isFeatured, setIsFeatured] = useState(false)
   const [isActive, setIsActive] = useState(true)
+
+  const [taxPercent,setTaxPercent] = useState(0)
 
   /* ---------------- LOAD CATEGORIES ---------------- */
 
@@ -682,6 +703,7 @@ export default function AddProducts() {
       inventory_quantity: 0,
       reserved_quantity: 0,
       low_stock_threshold: 5,
+      tax_percent:0,
       is_active: true
     })
 
@@ -699,7 +721,7 @@ export default function AddProducts() {
     optionIndex: number,
     valueIndex: number,
     field: keyof OptionValue,
-    value: OptionValue[keyof OptionValue]
+    value: any
   ) {
 
     const copy = [...options]
@@ -710,6 +732,26 @@ export default function AddProducts() {
     }
 
     copy[optionIndex].values[valueIndex] = updatedValue
+
+    setOptions(copy)
+  }
+
+  /* ---------------- ATTRIBUTES ---------------- */
+
+  function addAttribute(optionIndex:number,valueIndex:number){
+
+    const copy=[...options]
+
+    copy[optionIndex].values[valueIndex].attributes[""]=""
+
+    setOptions(copy)
+  }
+
+  function updateAttribute(optionIndex:number,valueIndex:number,key:string,value:string){
+
+    const copy=[...options]
+
+    copy[optionIndex].values[valueIndex].attributes[key]=value
 
     setOptions(copy)
   }
@@ -733,6 +775,7 @@ export default function AddProducts() {
 
       base_price: Number(form.get("base_price")),
       mrp: Number(form.get("mrp")),
+      tax_percent:taxPercent,
 
       description,
       images,
@@ -761,17 +804,6 @@ export default function AddProducts() {
     }
 
     alert("Product saved successfully")
-
-    /* RESET FORM */
-
-    formRef.current?.reset()
-
-    setImages([])
-    setPreview([])
-    setOptions([])
-    setDescription([{ title: "", description: "" }])
-    setIsFeatured(false)
-    setIsActive(true)
   }
 
   /* ---------------- UI ---------------- */
@@ -839,7 +871,7 @@ export default function AddProducts() {
 <CardTitle>Pricing</CardTitle>
 </CardHeader>
 
-<CardContent className="grid grid-cols-2 gap-6">
+<CardContent className="grid grid-cols-3 gap-6">
 
 <div>
 <Label>Base Price</Label>
@@ -849,6 +881,12 @@ export default function AddProducts() {
 <div>
 <Label>MRP</Label>
 <Input name="mrp" type="number" />
+</div>
+
+<div>
+<Label>Tax %</Label>
+<Input type="number" value={taxPercent}
+onChange={(e)=>setTaxPercent(Number(e.target.value))}/>
 </div>
 
 </CardContent>
@@ -926,39 +964,7 @@ Add Section
 </CardContent>
 </Card>
 
-{/* IMAGES */}
-
-<Card>
-
-<CardHeader>
-<CardTitle>Images (max 5)</CardTitle>
-</CardHeader>
-
-<CardContent className="space-y-4">
-
-<input type="file" multiple
-onChange={(e)=>{
-
-uploadImages(e.target.files)
-
-const p=[...Array.from(e.target.files ?? [])].map(f=>URL.createObjectURL(f))
-setPreview(p)
-
-}}
-/>
-
-<div className="flex gap-4">
-
-{preview.map(src=>(
-<img key={src} src={src} className="w-24 h-24 object-cover rounded"/>
-))}
-
-</div>
-
-</CardContent>
-</Card>
-
-{/* PRODUCT OPTIONS */}
+{/* VARIANTS */}
 
 <Card>
 
@@ -969,6 +975,7 @@ setPreview(p)
 <CardContent className="space-y-10">
 
 {options.map((option,i)=>(
+
 <div key={i} className="border rounded-xl p-6 space-y-6 bg-muted/20">
 
 <div className="grid grid-cols-2 gap-6">
@@ -993,18 +1000,13 @@ setOptions(copy)
 <div className="space-y-6">
 
 {option.values.map((value,vi)=>(
-<div key={vi} className="border p-6 rounded-lg grid grid-cols-4 gap-6">
+
+<div key={vi} className="border p-6 rounded-lg grid grid-cols-3 gap-6">
 
 <div>
 <Label>Value</Label>
 <Input value={value.value}
 onChange={(e)=>updateOptionValue(i,vi,"value",e.target.value)}/>
-</div>
-
-<div>
-<Label>Name</Label>
-<Input value={value.name}
-onChange={(e)=>updateOptionValue(i,vi,"name",e.target.value)}/>
 </div>
 
 <div>
@@ -1014,9 +1016,10 @@ onChange={(e)=>updateOptionValue(i,vi,"sku",e.target.value)}/>
 </div>
 
 <div>
-<Label>Sort Order</Label>
-<Input type="number" value={value.sort_order}
-onChange={(e)=>updateOptionValue(i,vi,"sort_order",Number(e.target.value))}/>
+<Label>Tax %</Label>
+<Input type="number"
+value={value.tax_percent}
+onChange={(e)=>updateOptionValue(i,vi,"tax_percent",Number(e.target.value))}/>
 </div>
 
 <div>
@@ -1038,28 +1041,50 @@ onChange={(e)=>updateOptionValue(i,vi,"reserved_quantity",Number(e.target.value)
 </div>
 
 <div>
-<Label>Low Stock Threshold</Label>
+<Label>Low Stock</Label>
 <Input type="number" value={value.low_stock_threshold}
 onChange={(e)=>updateOptionValue(i,vi,"low_stock_threshold",Number(e.target.value))}/>
 </div>
 
-<div>
-<Label>Attributes (JSON)</Label>
-<Input placeholder='{"weight":"200g"}'
+{/* ATTRIBUTES */}
+
+<div className="col-span-3 space-y-2">
+
+<Label>Attributes</Label>
+
+{Object.entries(value.attributes).map(([k,v],ai)=>(
+<div key={ai} className="flex gap-2">
+
+<Input placeholder="Key"
+value={k}
 onChange={(e)=>{
-try{
-updateOptionValue(i,vi,"attributes",JSON.parse(e.target.value))
-}catch{}
-}}/>
+
+const copy={...value.attributes}
+delete copy[k]
+copy[e.target.value]=v
+
+updateOptionValue(i,vi,"attributes",copy)
+
+}}
+/>
+
+<Input placeholder="Value"
+value={String(v)}
+onChange={(e)=>updateAttribute(i,vi,k,e.target.value)}
+/>
+
+</div>
+))}
+
+<Button type="button" size="sm"
+onClick={()=>addAttribute(i,vi)}>
+Add Attribute
+</Button>
+
 </div>
 
-<div className="flex items-center gap-3">
-<Checkbox checked={value.is_active}
-onCheckedChange={(v)=>updateOptionValue(i,vi,"is_active",Boolean(v))}/>
-<Label>Active</Label>
 </div>
 
-</div>
 ))}
 
 <Button type="button" variant="outline" onClick={()=>addOptionValue(i)}>
@@ -1069,6 +1094,7 @@ Add Option Value
 </div>
 
 </div>
+
 ))}
 
 <Button type="button" variant="secondary" onClick={addOption}>

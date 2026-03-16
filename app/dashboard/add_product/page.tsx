@@ -1,5 +1,4 @@
 import AddProducts from "@/components/addProduct"
-import AddProduct from "@/components/addProduct"
 import { createClient } from "@/utils/supabase/server"
 
 export default async function AddProductPage() {
