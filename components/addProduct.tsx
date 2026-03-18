@@ -1,4 +1,557 @@
 
+// // "use client"
+
+// // import { useEffect, useState, useRef } from "react"
+// // import { createClient } from "@/utils/supabase/client"
+
+// // import { Input } from "@/components/ui/input"
+// // import { Button } from "@/components/ui/button"
+// // import { Textarea } from "@/components/ui/textarea"
+// // import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
+// // import { Label } from "@/components/ui/label"
+// // import { Checkbox } from "@/components/ui/checkbox"
+
+// // /* ---------------- TYPES ---------------- */
+
+// // interface Category {
+// //   id: string
+// //   name: string
+// // }
+
+// // interface DescriptionBlock {
+// //   title: string
+// //   description: string
+// // }
+
+// // interface OptionValue {
+// //   value: string
+// //   sort_order: number
+// //   sku: string
+// //   name: string
+// //   attributes: Record<string, unknown>
+// //   addon_price: number
+// //   inventory_quantity: number
+// //   reserved_quantity: number
+// //   low_stock_threshold: number
+// //   is_active: boolean
+// // }
+
+// // interface ProductOption {
+// //   name: string
+// //   sort_order: number
+// //   values: OptionValue[]
+// // }
+
+// // /* ---------------- COMPONENT ---------------- */
+
+// // export default function AddProducts() {
+
+// //   const supabase = createClient()
+// //   const formRef = useRef<HTMLFormElement>(null)
+
+// //   const [categories, setCategories] = useState<Category[]>([])
+// //   const [images, setImages] = useState<string[]>([])
+// //   const [preview, setPreview] = useState<string[]>([])
+
+// //   const [description, setDescription] = useState<DescriptionBlock[]>([
+// //     { title: "", description: "" }
+// //   ])
+
+// //   const [options, setOptions] = useState<ProductOption[]>([])
+
+// //   const [isFeatured, setIsFeatured] = useState(false)
+// //   const [isActive, setIsActive] = useState(true)
+
+// //   /* ---------------- LOAD CATEGORIES ---------------- */
+
+// //   useEffect(() => {
+
+// //     async function loadCategories() {
+
+// //       const { data } = await supabase
+// //         .from("categories")
+// //         .select("id,name")
+
+// //       setCategories(data ?? [])
+// //     }
+
+// //     loadCategories()
+
+// //   }, [supabase])
+
+// //   /* ---------------- IMAGE UPLOAD ---------------- */
+
+// //   async function uploadImages(files: FileList | null) {
+
+// //     if (!files) return
+
+// //     if (files.length > 5) {
+// //       alert("Maximum 5 images allowed")
+// //       return
+// //     }
+
+// //     const urls: string[] = []
+
+// //     for (const file of Array.from(files)) {
+
+// //       const name = Date.now() + "-" + file.name
+
+// //       await supabase.storage
+// //         .from("product-images")
+// //         .upload(name, file)
+
+// //       const { data } = supabase.storage
+// //         .from("product-images")
+// //         .getPublicUrl(name)
+
+// //       urls.push(data.publicUrl)
+// //     }
+
+// //     setImages(urls)
+// //   }
+
+// //   /* ---------------- DESCRIPTION ---------------- */
+
+// //   function addDescription() {
+// //     setDescription([...description, { title: "", description: "" }])
+// //   }
+
+// //   function updateDescription(index: number, field: keyof DescriptionBlock, value: string) {
+
+// //     const copy = [...description]
+// //     copy[index][field] = value
+// //     setDescription(copy)
+// //   }
+
+// //   /* ---------------- OPTIONS ---------------- */
+
+// //   function addOption() {
+
+// //     setOptions([
+// //       ...options,
+// //       { name: "", sort_order: 0, values: [] }
+// //     ])
+// //   }
+
+// //   function addOptionValue(index: number) {
+
+// //     const copy = [...options]
+
+// //     copy[index].values.push({
+// //       value: "",
+// //       sort_order: 0,
+// //       sku: "",
+// //       name: "",
+// //       attributes: {},
+// //       addon_price: 0,
+// //       inventory_quantity: 0,
+// //       reserved_quantity: 0,
+// //       low_stock_threshold: 5,
+// //       is_active: true
+// //     })
+
+// //     setOptions(copy)
+// //   }
+
+// //   function updateOptionName(index: number, value: string) {
+
+// //     const copy = [...options]
+// //     copy[index].name = value
+// //     setOptions(copy)
+// //   }
+
+// //   function updateOptionValue(
+// //     optionIndex: number,
+// //     valueIndex: number,
+// //     field: keyof OptionValue,
+// //     value: OptionValue[keyof OptionValue]
+// //   ) {
+
+// //     const copy = [...options]
+
+// //     const updatedValue = {
+// //       ...copy[optionIndex].values[valueIndex],
+// //       [field]: value
+// //     }
+
+// //     copy[optionIndex].values[valueIndex] = updatedValue
+
+// //     setOptions(copy)
+// //   }
+
+// //   /* ---------------- SUBMIT ---------------- */
+
+// //   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+
+// //     e.preventDefault()
+
+// //     const form = new FormData(e.currentTarget)
+
+// //     const metadataValue = form.get("metadata") as string | null
+
+// //     const payload = {
+
+// //       category_id: form.get("category") as string | null,
+// //       name: form.get("name") as string,
+// //       brand: form.get("brand") as string | null,
+// //       slug: form.get("slug") as string,
+
+// //       base_price: Number(form.get("base_price")),
+// //       mrp: Number(form.get("mrp")),
+
+// //       description,
+// //       images,
+
+// //       metadata: metadataValue ? metadataValue.split(",") : [],
+
+// //       is_featured: isFeatured,
+// //       is_active: isActive,
+
+// //       options
+// //     }
+
+// //     const res = await fetch("/api/addProduct", {
+// //       method: "POST",
+// //       headers: {
+// //         "Content-Type": "application/json"
+// //       },
+// //       body: JSON.stringify(payload)
+// //     })
+
+// //     const data = await res.json()
+
+// //     if (!res.ok) {
+// //       alert(data.error)
+// //       return
+// //     }
+
+// //     alert("Product saved successfully")
+
+// //     /* RESET FORM */
+
+// //     formRef.current?.reset()
+
+// //     setImages([])
+// //     setPreview([])
+// //     setOptions([])
+// //     setDescription([{ title: "", description: "" }])
+// //     setIsFeatured(false)
+// //     setIsActive(true)
+// //   }
+
+// //   /* ---------------- UI ---------------- */
+
+// //   return (
+
+// // <form ref={formRef} onSubmit={handleSubmit} className="space-y-10 max-w-7xl">
+
+// // {/* BASIC INFO */}
+
+// // <Card>
+
+// // <CardHeader>
+// // <CardTitle>Basic Information</CardTitle>
+// // </CardHeader>
+
+// // <CardContent className="grid grid-cols-3 gap-6">
+
+// // <div>
+// // <Label>Name</Label>
+// // <Input name="name" required />
+// // </div>
+
+// // <div>
+// // <Label>Brand</Label>
+// // <Input name="brand" />
+// // </div>
+
+// // <div>
+// // <Label>Slug</Label>
+// // <Input name="slug" required />
+// // </div>
+
+// // </CardContent>
+// // </Card>
+
+// // {/* CATEGORY */}
+
+// // <Card>
+
+// // <CardHeader>
+// // <CardTitle>Category</CardTitle>
+// // </CardHeader>
+
+// // <CardContent>
+
+// // <select name="category" className="border rounded p-2 w-full">
+
+// // {categories.map(c => (
+// // <option key={c.id} value={c.id}>
+// // {c.name}
+// // </option>
+// // ))}
+
+// // </select>
+
+// // </CardContent>
+// // </Card>
+
+// // {/* PRICING */}
+
+// // <Card>
+
+// // <CardHeader>
+// // <CardTitle>Pricing</CardTitle>
+// // </CardHeader>
+
+// // <CardContent className="grid grid-cols-2 gap-6">
+
+// // <div>
+// // <Label>Base Price</Label>
+// // <Input name="base_price" type="number" />
+// // </div>
+
+// // <div>
+// // <Label>MRP</Label>
+// // <Input name="mrp" type="number" />
+// // </div>
+
+// // </CardContent>
+// // </Card>
+
+// // {/* METADATA */}
+
+// // <Card>
+
+// // <CardHeader>
+// // <CardTitle>Metadata</CardTitle>
+// // </CardHeader>
+
+// // <CardContent>
+
+// // <Label>Comma separated metadata</Label>
+// // <Input name="metadata" />
+
+// // </CardContent>
+// // </Card>
+
+// // {/* FLAGS */}
+
+// // <Card>
+
+// // <CardHeader>
+// // <CardTitle>Product Settings</CardTitle>
+// // </CardHeader>
+
+// // <CardContent className="flex gap-8">
+
+// // <div className="flex items-center gap-3">
+// // <Checkbox checked={isFeatured} onCheckedChange={(v)=>setIsFeatured(Boolean(v))}/>
+// // <Label>Featured</Label>
+// // </div>
+
+// // <div className="flex items-center gap-3">
+// // <Checkbox checked={isActive} onCheckedChange={(v)=>setIsActive(Boolean(v))}/>
+// // <Label>Active</Label>
+// // </div>
+
+// // </CardContent>
+// // </Card>
+
+// // {/* DESCRIPTION */}
+
+// // <Card>
+
+// // <CardHeader>
+// // <CardTitle>Description Sections</CardTitle>
+// // </CardHeader>
+
+// // <CardContent className="space-y-6">
+
+// // {description.map((d,i)=>(
+// // <div key={i} className="border rounded-lg p-4 space-y-3">
+
+// // <div>
+// // <Label>Title</Label>
+// // <Input value={d.title} onChange={(e)=>updateDescription(i,"title",e.target.value)} />
+// // </div>
+
+// // <div>
+// // <Label>Description</Label>
+// // <Textarea value={d.description} onChange={(e)=>updateDescription(i,"description",e.target.value)} />
+// // </div>
+
+// // </div>
+// // ))}
+
+// // <Button type="button" onClick={addDescription}>
+// // Add Section
+// // </Button>
+
+// // </CardContent>
+// // </Card>
+
+// // {/* IMAGES */}
+
+// // <Card>
+
+// // <CardHeader>
+// // <CardTitle>Images (max 5)</CardTitle>
+// // </CardHeader>
+
+// // <CardContent className="space-y-4">
+
+// // <input type="file" multiple
+// // onChange={(e)=>{
+
+// // uploadImages(e.target.files)
+
+// // const p=[...Array.from(e.target.files ?? [])].map(f=>URL.createObjectURL(f))
+// // setPreview(p)
+
+// // }}
+// // />
+
+// // <div className="flex gap-4">
+
+// // {preview.map(src=>(
+// // <img key={src} src={src} className="w-24 h-24 object-cover rounded"/>
+// // ))}
+
+// // </div>
+
+// // </CardContent>
+// // </Card>
+
+// // {/* PRODUCT OPTIONS */}
+
+// // <Card>
+
+// // <CardHeader>
+// // <CardTitle>Product Options / Variants</CardTitle>
+// // </CardHeader>
+
+// // <CardContent className="space-y-10">
+
+// // {options.map((option,i)=>(
+// // <div key={i} className="border rounded-xl p-6 space-y-6 bg-muted/20">
+
+// // <div className="grid grid-cols-2 gap-6">
+
+// // <div>
+// // <Label>Option Name</Label>
+// // <Input value={option.name} onChange={(e)=>updateOptionName(i,e.target.value)} />
+// // </div>
+
+// // <div>
+// // <Label>Sort Order</Label>
+// // <Input type="number" value={option.sort_order}
+// // onChange={(e)=>{
+// // const copy=[...options]
+// // copy[i].sort_order=Number(e.target.value)
+// // setOptions(copy)
+// // }}/>
+// // </div>
+
+// // </div>
+
+// // <div className="space-y-6">
+
+// // {option.values.map((value,vi)=>(
+// // <div key={vi} className="border p-6 rounded-lg grid grid-cols-4 gap-6">
+
+// // <div>
+// // <Label>Value</Label>
+// // <Input value={value.value}
+// // onChange={(e)=>updateOptionValue(i,vi,"value",e.target.value)}/>
+// // </div>
+
+// // <div>
+// // <Label>Name</Label>
+// // <Input value={value.name}
+// // onChange={(e)=>updateOptionValue(i,vi,"name",e.target.value)}/>
+// // </div>
+
+// // <div>
+// // <Label>SKU</Label>
+// // <Input value={value.sku}
+// // onChange={(e)=>updateOptionValue(i,vi,"sku",e.target.value)}/>
+// // </div>
+
+// // <div>
+// // <Label>Sort Order</Label>
+// // <Input type="number" value={value.sort_order}
+// // onChange={(e)=>updateOptionValue(i,vi,"sort_order",Number(e.target.value))}/>
+// // </div>
+
+// // <div>
+// // <Label>Addon Price</Label>
+// // <Input type="number" value={value.addon_price}
+// // onChange={(e)=>updateOptionValue(i,vi,"addon_price",Number(e.target.value))}/>
+// // </div>
+
+// // <div>
+// // <Label>Inventory</Label>
+// // <Input type="number" value={value.inventory_quantity}
+// // onChange={(e)=>updateOptionValue(i,vi,"inventory_quantity",Number(e.target.value))}/>
+// // </div>
+
+// // <div>
+// // <Label>Reserved</Label>
+// // <Input type="number" value={value.reserved_quantity}
+// // onChange={(e)=>updateOptionValue(i,vi,"reserved_quantity",Number(e.target.value))}/>
+// // </div>
+
+// // <div>
+// // <Label>Low Stock Threshold</Label>
+// // <Input type="number" value={value.low_stock_threshold}
+// // onChange={(e)=>updateOptionValue(i,vi,"low_stock_threshold",Number(e.target.value))}/>
+// // </div>
+
+// // <div>
+// // <Label>Attributes (JSON)</Label>
+// // <Input placeholder='{"weight":"200g"}'
+// // onChange={(e)=>{
+// // try{
+// // updateOptionValue(i,vi,"attributes",JSON.parse(e.target.value))
+// // }catch{}
+// // }}/>
+// // </div>
+
+// // <div className="flex items-center gap-3">
+// // <Checkbox checked={value.is_active}
+// // onCheckedChange={(v)=>updateOptionValue(i,vi,"is_active",Boolean(v))}/>
+// // <Label>Active</Label>
+// // </div>
+
+// // </div>
+// // ))}
+
+// // <Button type="button" variant="outline" onClick={()=>addOptionValue(i)}>
+// // Add Option Value
+// // </Button>
+
+// // </div>
+
+// // </div>
+// // ))}
+
+// // <Button type="button" variant="secondary" onClick={addOption}>
+// // Add Product Option
+// // </Button>
+
+// // </CardContent>
+
+// // </Card>
+
+// // <Button size="lg" type="submit">
+// // Save Product
+// // </Button>
+
+// // </form>
+// //   )
+// // }
+
 // "use client"
 
 // import { useEffect, useState, useRef } from "react"
@@ -28,11 +581,12 @@
 //   sort_order: number
 //   sku: string
 //   name: string
-//   attributes: Record<string, unknown>
+//   attributes: Record<string, string>
 //   addon_price: number
 //   inventory_quantity: number
 //   reserved_quantity: number
 //   low_stock_threshold: number
+//   tax_percent:number
 //   is_active: boolean
 // }
 
@@ -61,6 +615,8 @@
 
 //   const [isFeatured, setIsFeatured] = useState(false)
 //   const [isActive, setIsActive] = useState(true)
+
+//   const [taxPercent,setTaxPercent] = useState(0)
 
 //   /* ---------------- LOAD CATEGORIES ---------------- */
 
@@ -147,6 +703,7 @@
 //       inventory_quantity: 0,
 //       reserved_quantity: 0,
 //       low_stock_threshold: 5,
+//       tax_percent:0,
 //       is_active: true
 //     })
 
@@ -164,7 +721,7 @@
 //     optionIndex: number,
 //     valueIndex: number,
 //     field: keyof OptionValue,
-//     value: OptionValue[keyof OptionValue]
+//     value: any
 //   ) {
 
 //     const copy = [...options]
@@ -175,6 +732,26 @@
 //     }
 
 //     copy[optionIndex].values[valueIndex] = updatedValue
+
+//     setOptions(copy)
+//   }
+
+//   /* ---------------- ATTRIBUTES ---------------- */
+
+//   function addAttribute(optionIndex:number,valueIndex:number){
+
+//     const copy=[...options]
+
+//     copy[optionIndex].values[valueIndex].attributes[""]=""
+
+//     setOptions(copy)
+//   }
+
+//   function updateAttribute(optionIndex:number,valueIndex:number,key:string,value:string){
+
+//     const copy=[...options]
+
+//     copy[optionIndex].values[valueIndex].attributes[key]=value
 
 //     setOptions(copy)
 //   }
@@ -198,6 +775,7 @@
 
 //       base_price: Number(form.get("base_price")),
 //       mrp: Number(form.get("mrp")),
+//       tax_percent:taxPercent,
 
 //       description,
 //       images,
@@ -226,17 +804,6 @@
 //     }
 
 //     alert("Product saved successfully")
-
-//     /* RESET FORM */
-
-//     formRef.current?.reset()
-
-//     setImages([])
-//     setPreview([])
-//     setOptions([])
-//     setDescription([{ title: "", description: "" }])
-//     setIsFeatured(false)
-//     setIsActive(true)
 //   }
 
 //   /* ---------------- UI ---------------- */
@@ -304,7 +871,7 @@
 // <CardTitle>Pricing</CardTitle>
 // </CardHeader>
 
-// <CardContent className="grid grid-cols-2 gap-6">
+// <CardContent className="grid grid-cols-3 gap-6">
 
 // <div>
 // <Label>Base Price</Label>
@@ -314,6 +881,12 @@
 // <div>
 // <Label>MRP</Label>
 // <Input name="mrp" type="number" />
+// </div>
+
+// <div>
+// <Label>Tax %</Label>
+// <Input type="number" value={taxPercent}
+// onChange={(e)=>setTaxPercent(Number(e.target.value))}/>
 // </div>
 
 // </CardContent>
@@ -391,39 +964,7 @@
 // </CardContent>
 // </Card>
 
-// {/* IMAGES */}
-
-// <Card>
-
-// <CardHeader>
-// <CardTitle>Images (max 5)</CardTitle>
-// </CardHeader>
-
-// <CardContent className="space-y-4">
-
-// <input type="file" multiple
-// onChange={(e)=>{
-
-// uploadImages(e.target.files)
-
-// const p=[...Array.from(e.target.files ?? [])].map(f=>URL.createObjectURL(f))
-// setPreview(p)
-
-// }}
-// />
-
-// <div className="flex gap-4">
-
-// {preview.map(src=>(
-// <img key={src} src={src} className="w-24 h-24 object-cover rounded"/>
-// ))}
-
-// </div>
-
-// </CardContent>
-// </Card>
-
-// {/* PRODUCT OPTIONS */}
+// {/* VARIANTS */}
 
 // <Card>
 
@@ -434,6 +975,7 @@
 // <CardContent className="space-y-10">
 
 // {options.map((option,i)=>(
+
 // <div key={i} className="border rounded-xl p-6 space-y-6 bg-muted/20">
 
 // <div className="grid grid-cols-2 gap-6">
@@ -458,18 +1000,13 @@
 // <div className="space-y-6">
 
 // {option.values.map((value,vi)=>(
-// <div key={vi} className="border p-6 rounded-lg grid grid-cols-4 gap-6">
+
+// <div key={vi} className="border p-6 rounded-lg grid grid-cols-3 gap-6">
 
 // <div>
 // <Label>Value</Label>
 // <Input value={value.value}
 // onChange={(e)=>updateOptionValue(i,vi,"value",e.target.value)}/>
-// </div>
-
-// <div>
-// <Label>Name</Label>
-// <Input value={value.name}
-// onChange={(e)=>updateOptionValue(i,vi,"name",e.target.value)}/>
 // </div>
 
 // <div>
@@ -479,9 +1016,10 @@
 // </div>
 
 // <div>
-// <Label>Sort Order</Label>
-// <Input type="number" value={value.sort_order}
-// onChange={(e)=>updateOptionValue(i,vi,"sort_order",Number(e.target.value))}/>
+// <Label>Tax %</Label>
+// <Input type="number"
+// value={value.tax_percent}
+// onChange={(e)=>updateOptionValue(i,vi,"tax_percent",Number(e.target.value))}/>
 // </div>
 
 // <div>
@@ -503,28 +1041,50 @@
 // </div>
 
 // <div>
-// <Label>Low Stock Threshold</Label>
+// <Label>Low Stock</Label>
 // <Input type="number" value={value.low_stock_threshold}
 // onChange={(e)=>updateOptionValue(i,vi,"low_stock_threshold",Number(e.target.value))}/>
 // </div>
 
-// <div>
-// <Label>Attributes (JSON)</Label>
-// <Input placeholder='{"weight":"200g"}'
+// {/* ATTRIBUTES */}
+
+// <div className="col-span-3 space-y-2">
+
+// <Label>Attributes</Label>
+
+// {Object.entries(value.attributes).map(([k,v],ai)=>(
+// <div key={ai} className="flex gap-2">
+
+// <Input placeholder="Key"
+// value={k}
 // onChange={(e)=>{
-// try{
-// updateOptionValue(i,vi,"attributes",JSON.parse(e.target.value))
-// }catch{}
-// }}/>
+
+// const copy={...value.attributes}
+// delete copy[k]
+// copy[e.target.value]=v
+
+// updateOptionValue(i,vi,"attributes",copy)
+
+// }}
+// />
+
+// <Input placeholder="Value"
+// value={String(v)}
+// onChange={(e)=>updateAttribute(i,vi,k,e.target.value)}
+// />
+
+// </div>
+// ))}
+
+// <Button type="button" size="sm"
+// onClick={()=>addAttribute(i,vi)}>
+// Add Attribute
+// </Button>
+
 // </div>
 
-// <div className="flex items-center gap-3">
-// <Checkbox checked={value.is_active}
-// onCheckedChange={(v)=>updateOptionValue(i,vi,"is_active",Boolean(v))}/>
-// <Label>Active</Label>
 // </div>
 
-// </div>
 // ))}
 
 // <Button type="button" variant="outline" onClick={()=>addOptionValue(i)}>
@@ -534,6 +1094,7 @@
 // </div>
 
 // </div>
+
 // ))}
 
 // <Button type="button" variant="secondary" onClick={addOption}>
@@ -586,7 +1147,7 @@ interface OptionValue {
   inventory_quantity: number
   reserved_quantity: number
   low_stock_threshold: number
-  tax_percent:number
+  tax_percent: number
   is_active: boolean
 }
 
@@ -616,7 +1177,7 @@ export default function AddProducts() {
   const [isFeatured, setIsFeatured] = useState(false)
   const [isActive, setIsActive] = useState(true)
 
-  const [taxPercent,setTaxPercent] = useState(0)
+  const [taxPercent, setTaxPercent] = useState(0)
 
   /* ---------------- LOAD CATEGORIES ---------------- */
 
@@ -647,8 +1208,14 @@ export default function AddProducts() {
     }
 
     const urls: string[] = []
+    const previews: string[] = []
 
     for (const file of Array.from(files)) {
+
+      if (file.size > 5 * 1024 * 1024) {
+        alert(`${file.name} exceeds 5MB`)
+        return
+      }
 
       const name = Date.now() + "-" + file.name
 
@@ -661,9 +1228,11 @@ export default function AddProducts() {
         .getPublicUrl(name)
 
       urls.push(data.publicUrl)
+      previews.push(URL.createObjectURL(file))
     }
 
     setImages(urls)
+    setPreview(previews)
   }
 
   /* ---------------- DESCRIPTION ---------------- */
@@ -703,7 +1272,7 @@ export default function AddProducts() {
       inventory_quantity: 0,
       reserved_quantity: 0,
       low_stock_threshold: 5,
-      tax_percent:0,
+      tax_percent: 0,
       is_active: true
     })
 
@@ -738,20 +1307,20 @@ export default function AddProducts() {
 
   /* ---------------- ATTRIBUTES ---------------- */
 
-  function addAttribute(optionIndex:number,valueIndex:number){
+  function addAttribute(optionIndex: number, valueIndex: number) {
 
-    const copy=[...options]
+    const copy = [...options]
 
-    copy[optionIndex].values[valueIndex].attributes[""]=""
+    copy[optionIndex].values[valueIndex].attributes[""] = ""
 
     setOptions(copy)
   }
 
-  function updateAttribute(optionIndex:number,valueIndex:number,key:string,value:string){
+  function updateAttribute(optionIndex: number, valueIndex: number, key: string, value: string) {
 
-    const copy=[...options]
+    const copy = [...options]
 
-    copy[optionIndex].values[valueIndex].attributes[key]=value
+    copy[optionIndex].values[valueIndex].attributes[key] = value
 
     setOptions(copy)
   }
@@ -775,7 +1344,7 @@ export default function AddProducts() {
 
       base_price: Number(form.get("base_price")),
       mrp: Number(form.get("mrp")),
-      tax_percent:taxPercent,
+      tax_percent: taxPercent,
 
       description,
       images,
@@ -810,305 +1379,335 @@ export default function AddProducts() {
 
   return (
 
-<form ref={formRef} onSubmit={handleSubmit} className="space-y-10 max-w-7xl">
+    <form ref={formRef} onSubmit={handleSubmit} className="space-y-10 max-w-7xl">
 
-{/* BASIC INFO */}
+      {/* BASIC INFO */}
 
-<Card>
+      <Card>
 
-<CardHeader>
-<CardTitle>Basic Information</CardTitle>
-</CardHeader>
+        <CardHeader>
+          <CardTitle>Basic Information</CardTitle>
+        </CardHeader>
 
-<CardContent className="grid grid-cols-3 gap-6">
+        <CardContent className="grid grid-cols-3 gap-6">
 
-<div>
-<Label>Name</Label>
-<Input name="name" required />
-</div>
+          <div>
+            <Label>Name</Label>
+            <Input name="name" required />
+          </div>
 
-<div>
-<Label>Brand</Label>
-<Input name="brand" />
-</div>
+          <div>
+            <Label>Brand</Label>
+            <Input name="brand" />
+          </div>
 
-<div>
-<Label>Slug</Label>
-<Input name="slug" required />
-</div>
+          <div>
+            <Label>Slug</Label>
+            <Input name="slug" required />
+          </div>
 
-</CardContent>
-</Card>
+        </CardContent>
+      </Card>
 
-{/* CATEGORY */}
+      {/* CATEGORY */}
 
-<Card>
+      <Card>
 
-<CardHeader>
-<CardTitle>Category</CardTitle>
-</CardHeader>
+        <CardHeader>
+          <CardTitle>Category</CardTitle>
+        </CardHeader>
 
-<CardContent>
+        <CardContent>
 
-<select name="category" className="border rounded p-2 w-full">
+          <select name="category" className="border rounded p-2 w-full">
 
-{categories.map(c => (
-<option key={c.id} value={c.id}>
-{c.name}
-</option>
-))}
+            {categories.map(c => (
+              <option key={c.id} value={c.id}>
+                {c.name}
+              </option>
+            ))}
 
-</select>
+          </select>
 
-</CardContent>
-</Card>
+        </CardContent>
+      </Card>
 
-{/* PRICING */}
+      {/* IMAGES */}
 
-<Card>
+      <Card>
 
-<CardHeader>
-<CardTitle>Pricing</CardTitle>
-</CardHeader>
+        <CardHeader>
+          <CardTitle>Product Images</CardTitle>
+        </CardHeader>
 
-<CardContent className="grid grid-cols-3 gap-6">
+        <CardContent className="space-y-4">
 
-<div>
-<Label>Base Price</Label>
-<Input name="base_price" type="number" />
-</div>
+          <Input
+            type="file"
+            multiple
+            accept="image/*"
+            onChange={(e) => uploadImages(e.target.files)}
+          />
 
-<div>
-<Label>MRP</Label>
-<Input name="mrp" type="number" />
-</div>
+          <div className="grid grid-cols-5 gap-4">
+            {preview.map((src, i) => (
+              <img
+                key={i}
+                src={src}
+                className="w-full h-24 object-cover rounded"
+              />
+            ))}
+          </div>
 
-<div>
-<Label>Tax %</Label>
-<Input type="number" value={taxPercent}
-onChange={(e)=>setTaxPercent(Number(e.target.value))}/>
-</div>
+        </CardContent>
+      </Card>
 
-</CardContent>
-</Card>
+      {/* PRICING */}
 
-{/* METADATA */}
+      <Card>
 
-<Card>
+        <CardHeader>
+          <CardTitle>Pricing</CardTitle>
+        </CardHeader>
 
-<CardHeader>
-<CardTitle>Metadata</CardTitle>
-</CardHeader>
+        <CardContent className="grid grid-cols-3 gap-6">
 
-<CardContent>
+          <div>
+            <Label>Base Price</Label>
+            <Input name="base_price" type="number" />
+          </div>
 
-<Label>Comma separated metadata</Label>
-<Input name="metadata" />
+          <div>
+            <Label>MRP</Label>
+            <Input name="mrp" type="number" />
+          </div>
 
-</CardContent>
-</Card>
+          <div>
+            <Label>Tax %</Label>
+            <Input type="number" value={taxPercent}
+              onChange={(e) => setTaxPercent(Number(e.target.value))} />
+          </div>
 
-{/* FLAGS */}
+        </CardContent>
+      </Card>
 
-<Card>
+      {/* METADATA */}
 
-<CardHeader>
-<CardTitle>Product Settings</CardTitle>
-</CardHeader>
+      <Card>
 
-<CardContent className="flex gap-8">
+        <CardHeader>
+          <CardTitle>Metadata</CardTitle>
+        </CardHeader>
 
-<div className="flex items-center gap-3">
-<Checkbox checked={isFeatured} onCheckedChange={(v)=>setIsFeatured(Boolean(v))}/>
-<Label>Featured</Label>
-</div>
+        <CardContent>
 
-<div className="flex items-center gap-3">
-<Checkbox checked={isActive} onCheckedChange={(v)=>setIsActive(Boolean(v))}/>
-<Label>Active</Label>
-</div>
+          <Label>Comma separated metadata</Label>
+          <Input name="metadata" />
 
-</CardContent>
-</Card>
+        </CardContent>
+      </Card>
 
-{/* DESCRIPTION */}
+      {/* FLAGS */}
 
-<Card>
+      <Card>
 
-<CardHeader>
-<CardTitle>Description Sections</CardTitle>
-</CardHeader>
+        <CardHeader>
+          <CardTitle>Product Settings</CardTitle>
+        </CardHeader>
 
-<CardContent className="space-y-6">
+        <CardContent className="flex gap-8">
 
-{description.map((d,i)=>(
-<div key={i} className="border rounded-lg p-4 space-y-3">
+          <div className="flex items-center gap-3">
+            <Checkbox checked={isFeatured} onCheckedChange={(v) => setIsFeatured(Boolean(v))} />
+            <Label>Featured</Label>
+          </div>
 
-<div>
-<Label>Title</Label>
-<Input value={d.title} onChange={(e)=>updateDescription(i,"title",e.target.value)} />
-</div>
+          <div className="flex items-center gap-3">
+            <Checkbox checked={isActive} onCheckedChange={(v) => setIsActive(Boolean(v))} />
+            <Label>Active</Label>
+          </div>
 
-<div>
-<Label>Description</Label>
-<Textarea value={d.description} onChange={(e)=>updateDescription(i,"description",e.target.value)} />
-</div>
+        </CardContent>
+      </Card>
 
-</div>
-))}
+      {/* DESCRIPTION */}
 
-<Button type="button" onClick={addDescription}>
-Add Section
-</Button>
+      <Card>
 
-</CardContent>
-</Card>
+        <CardHeader>
+          <CardTitle>Description Sections</CardTitle>
+        </CardHeader>
 
-{/* VARIANTS */}
+        <CardContent className="space-y-6">
 
-<Card>
+          {description.map((d, i) => (
+            <div key={i} className="border rounded-lg p-4 space-y-3">
 
-<CardHeader>
-<CardTitle>Product Options / Variants</CardTitle>
-</CardHeader>
+              <div>
+                <Label>Title</Label>
+                <Input value={d.title} onChange={(e) => updateDescription(i, "title", e.target.value)} />
+              </div>
 
-<CardContent className="space-y-10">
+              <div>
+                <Label>Description</Label>
+                <Textarea value={d.description} onChange={(e) => updateDescription(i, "description", e.target.value)} />
+              </div>
 
-{options.map((option,i)=>(
+            </div>
+          ))}
 
-<div key={i} className="border rounded-xl p-6 space-y-6 bg-muted/20">
+          <Button type="button" onClick={addDescription}>
+            Add Section
+          </Button>
 
-<div className="grid grid-cols-2 gap-6">
+        </CardContent>
+      </Card>
 
-<div>
-<Label>Option Name</Label>
-<Input value={option.name} onChange={(e)=>updateOptionName(i,e.target.value)} />
-</div>
+      {/* VARIANTS */}
 
-<div>
-<Label>Sort Order</Label>
-<Input type="number" value={option.sort_order}
-onChange={(e)=>{
-const copy=[...options]
-copy[i].sort_order=Number(e.target.value)
-setOptions(copy)
-}}/>
-</div>
+      <Card>
 
-</div>
+        <CardHeader>
+          <CardTitle>Product Options / Variants</CardTitle>
+        </CardHeader>
 
-<div className="space-y-6">
+        <CardContent className="space-y-10">
 
-{option.values.map((value,vi)=>(
+          {options.map((option, i) => (
 
-<div key={vi} className="border p-6 rounded-lg grid grid-cols-3 gap-6">
+            <div key={i} className="border rounded-xl p-6 space-y-6 bg-muted/20">
 
-<div>
-<Label>Value</Label>
-<Input value={value.value}
-onChange={(e)=>updateOptionValue(i,vi,"value",e.target.value)}/>
-</div>
+              <div className="grid grid-cols-2 gap-6">
 
-<div>
-<Label>SKU</Label>
-<Input value={value.sku}
-onChange={(e)=>updateOptionValue(i,vi,"sku",e.target.value)}/>
-</div>
+                <div>
+                  <Label>Option Name</Label>
+                  <Input value={option.name} onChange={(e) => updateOptionName(i, e.target.value)} />
+                </div>
 
-<div>
-<Label>Tax %</Label>
-<Input type="number"
-value={value.tax_percent}
-onChange={(e)=>updateOptionValue(i,vi,"tax_percent",Number(e.target.value))}/>
-</div>
+                <div>
+                  <Label>Sort Order</Label>
+                  <Input type="number" value={option.sort_order}
+                    onChange={(e) => {
+                      const copy = [...options]
+                      copy[i].sort_order = Number(e.target.value)
+                      setOptions(copy)
+                    }} />
+                </div>
 
-<div>
-<Label>Addon Price</Label>
-<Input type="number" value={value.addon_price}
-onChange={(e)=>updateOptionValue(i,vi,"addon_price",Number(e.target.value))}/>
-</div>
+              </div>
 
-<div>
-<Label>Inventory</Label>
-<Input type="number" value={value.inventory_quantity}
-onChange={(e)=>updateOptionValue(i,vi,"inventory_quantity",Number(e.target.value))}/>
-</div>
+              <div className="space-y-6">
 
-<div>
-<Label>Reserved</Label>
-<Input type="number" value={value.reserved_quantity}
-onChange={(e)=>updateOptionValue(i,vi,"reserved_quantity",Number(e.target.value))}/>
-</div>
+                {option.values.map((value, vi) => (
 
-<div>
-<Label>Low Stock</Label>
-<Input type="number" value={value.low_stock_threshold}
-onChange={(e)=>updateOptionValue(i,vi,"low_stock_threshold",Number(e.target.value))}/>
-</div>
+                  <div key={vi} className="border p-6 rounded-lg grid grid-cols-3 gap-6">
 
-{/* ATTRIBUTES */}
+                    <div>
+                      <Label>Value</Label>
+                      <Input value={value.value}
+                        onChange={(e) => updateOptionValue(i, vi, "value", e.target.value)} />
+                    </div>
 
-<div className="col-span-3 space-y-2">
+                    <div>
+                      <Label>SKU</Label>
+                      <Input value={value.sku}
+                        onChange={(e) => updateOptionValue(i, vi, "sku", e.target.value)} />
+                    </div>
 
-<Label>Attributes</Label>
+                    <div>
+                      <Label>Tax %</Label>
+                      <Input type="number"
+                        value={value.tax_percent}
+                        onChange={(e) => updateOptionValue(i, vi, "tax_percent", Number(e.target.value))} />
+                    </div>
 
-{Object.entries(value.attributes).map(([k,v],ai)=>(
-<div key={ai} className="flex gap-2">
+                    <div>
+                      <Label>Addon Price</Label>
+                      <Input type="number" value={value.addon_price}
+                        onChange={(e) => updateOptionValue(i, vi, "addon_price", Number(e.target.value))} />
+                    </div>
 
-<Input placeholder="Key"
-value={k}
-onChange={(e)=>{
+                    <div>
+                      <Label>Inventory</Label>
+                      <Input type="number" value={value.inventory_quantity}
+                        onChange={(e) => updateOptionValue(i, vi, "inventory_quantity", Number(e.target.value))} />
+                    </div>
 
-const copy={...value.attributes}
-delete copy[k]
-copy[e.target.value]=v
+                    <div>
+                      <Label>Reserved</Label>
+                      <Input type="number" value={value.reserved_quantity}
+                        onChange={(e) => updateOptionValue(i, vi, "reserved_quantity", Number(e.target.value))} />
+                    </div>
 
-updateOptionValue(i,vi,"attributes",copy)
+                    <div>
+                      <Label>Low Stock</Label>
+                      <Input type="number" value={value.low_stock_threshold}
+                        onChange={(e) => updateOptionValue(i, vi, "low_stock_threshold", Number(e.target.value))} />
+                    </div>
 
-}}
-/>
+                    <div className="col-span-3 space-y-2">
 
-<Input placeholder="Value"
-value={String(v)}
-onChange={(e)=>updateAttribute(i,vi,k,e.target.value)}
-/>
+                      <Label>Attributes</Label>
 
-</div>
-))}
+                      {Object.entries(value.attributes).map(([k, v], ai) => (
+                        <div key={ai} className="flex gap-2">
 
-<Button type="button" size="sm"
-onClick={()=>addAttribute(i,vi)}>
-Add Attribute
-</Button>
+                          <Input
+                            placeholder="Key"
+                            value={k}
+                            onChange={(e) => {
 
-</div>
+                              const copy = { ...value.attributes }
+                              delete copy[k]
+                              copy[e.target.value] = v
 
-</div>
+                              updateOptionValue(i, vi, "attributes", copy)
 
-))}
+                            }}
+                          />
 
-<Button type="button" variant="outline" onClick={()=>addOptionValue(i)}>
-Add Option Value
-</Button>
+                          <Input
+                            placeholder="Value"
+                            value={String(v)}
+                            onChange={(e) => updateAttribute(i, vi, k, e.target.value)}
+                          />
 
-</div>
+                        </div>
+                      ))}
 
-</div>
+                      <Button type="button" size="sm"
+                        onClick={() => addAttribute(i, vi)}>
+                        Add Attribute
+                      </Button>
 
-))}
+                    </div>
 
-<Button type="button" variant="secondary" onClick={addOption}>
-Add Product Option
-</Button>
+                  </div>
 
-</CardContent>
+                ))}
 
-</Card>
+                <Button type="button" variant="outline" onClick={() => addOptionValue(i)}>
+                  Add Option Value
+                </Button>
 
-<Button size="lg" type="submit">
-Save Product
-</Button>
+              </div>
 
-</form>
+            </div>
+
+          ))}
+
+          <Button type="button" variant="secondary" onClick={addOption}>
+            Add Product Option
+          </Button>
+
+        </CardContent>
+
+      </Card>
+
+      <Button size="lg" type="submit">
+        Save Product
+      </Button>
+
+    </form>
   )
 }

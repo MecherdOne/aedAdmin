@@ -1,3 +1,5 @@
+
+
 // import { createClient } from "@/utils/supabase/server"
 // import { NextResponse } from "next/server"
 
@@ -16,6 +18,7 @@
 //       description,
 //       base_price,
 //       mrp,
+//       tax_percent,        // ✅ added
 //       images,
 //       metadata,
 //       is_featured,
@@ -30,6 +33,8 @@
 //       )
 //     }
 
+//     /* ---------------- INSERT PRODUCT ---------------- */
+
 //     const { data: product, error } = await supabase
 //       .from("products")
 //       .insert({
@@ -40,6 +45,7 @@
 //         description,
 //         base_price,
 //         mrp,
+//         tax_percent,     // ✅ added
 //         images,
 //         metadata,
 //         is_featured,
@@ -49,10 +55,15 @@
 //       .single()
 
 //     if (error) {
-//       return NextResponse.json({ error: error.message }, { status: 500 })
+//       return NextResponse.json(
+//         { error: error.message },
+//         { status: 500 }
+//       )
 //     }
 
 //     const productId = product.id
+
+//     /* ---------------- OPTIONS ---------------- */
 
 //     if (options?.length) {
 
@@ -77,6 +88,8 @@
 
 //         const optionId = optionRow.id
 
+//         /* ---------------- OPTION VALUES ---------------- */
+
 //         for (const value of option.values) {
 
 //           const { error: valueError } = await supabase
@@ -92,6 +105,7 @@
 //               inventory_quantity: value.inventory_quantity,
 //               reserved_quantity: value.reserved_quantity,
 //               low_stock_threshold: value.low_stock_threshold,
+//               tax_percent: value.tax_percent,   // ✅ added
 //               is_active: value.is_active
 //             })
 
@@ -115,6 +129,7 @@
 //       { error: "Server error" },
 //       { status: 500 }
 //     )
+
 //   }
 // }
 
